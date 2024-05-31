@@ -1,0 +1,16 @@
+{% extends 'root.html' %}
+
+{% load static %}
+{% block title %} Compute {% endblock %}
+
+{% block content %}
+<div class="floater">
+  <h3 style="padding:20px">Test Program</h3>
+
+  
+  <form method="post">
+    {% csrf_token %}
+    <input class="submit-btn" type="submit" value="compute"/> 
+  </form>
+</div>
+{% endblock %}

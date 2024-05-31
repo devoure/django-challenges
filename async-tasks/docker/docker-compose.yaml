@@ -1,0 +1,43 @@
+version: '3.3'
+
+services:
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ../redis/dаta:/root/redis
+      - ..//redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=my-password
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+  django-async-tasks:
+    build:
+      context: ../app/.
+    container_name: async-tasks-django
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../app/async_tasks:/app
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=RRFfsdkskks43!~@44332
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    depends_on:
+      - redis
+  celery:
+    build:
+      context: ../app/.
+    container_name: celery
+    volumes:
+      - ../app/async_tasks:/app
+    command: sh -c "python -m celery -A async_tasks worker -l info"
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=RRFfsdkskks43!~@44332
+      - ALLOWED_HOSTS=localhost,127.0.0.1
+    depends_on:
+      - redis
