@@ -3,6 +3,7 @@ from rest_framework import generics
 from browser.models import Student
 from browser.serializers import StudentsSerializer
 from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import extend_schema
 
 
 class StandardPagination(PageNumberPagination):
@@ -16,6 +17,12 @@ class StudentsValues(generics.ListAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentsSerializer
     pagination_class = StandardPagination
+
+#    @extend_schema(
+#            request=StudentsSerializer,
+#            responses={201: StudentsSerializer},
+#            summary='List all students'
+#            )
 
 
 class StudentValues(generics.RetrieveAPIView):
